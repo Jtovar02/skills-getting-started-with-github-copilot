@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Clear loading message
       activitiesList.innerHTML = "";
+      const selectedActivity = activitySelect.value;
       activitySelect.querySelectorAll("option:not(:first-child)").forEach((option) => {
         option.remove();
       });
@@ -92,6 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = name;
         activitySelect.appendChild(option);
       });
+
+      if (selectedActivity && activities[selectedActivity]) {
+        activitySelect.value = selectedActivity;
+      }
     } catch (error) {
       activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
       console.error("Error fetching activities:", error);
@@ -141,4 +146,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize app
   fetchActivities();
+
+  // Keep activity cards in sync when participants sign up from another page.
+  setInterval(() => {
+    if (!document.hidden) {
+      fetchActivities();
+    }
+  }, 5000);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      fetchActivities();
+    }
+  });
 });
